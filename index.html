@@ -1,395 +1,540 @@
 <!DOCTYPE html>
 <html lang="fr" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dr HASBI OTHMAN - Chirurgien Dentiste | Bouskoura</title>
-    <meta name="description" content="Cabinet dentaire du Dr HASBI OTHMAN à Bouskoura. Soins dentaires, chirurgie, orthodontie, blanchiment. Tous nos services à 200 DH.">
+    <meta
+      name="description"
+      content="Cabinet dentaire du Dr HASBI OTHMAN à Bouskoura. Soins dentaires, chirurgie, orthodontie, blanchiment. Tous nos services à ."
+    />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css"
+      rel="stylesheet"
+    />
     <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .service-card {
+        transition: all 0.3s ease;
+      }
+      .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .floating-animation {
+        animation: float 6s ease-in-out infinite;
+      }
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
         }
-        .service-card {
-            transition: all 0.3s ease;
+        50% {
+          transform: translateY(-20px);
         }
-        .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        100% {
+          transform: translateY(0px);
         }
-        .floating-animation {
-            animation: float 6s ease-in-out infinite;
+      }
+      .pulse-button {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
         }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
+        50% {
+          opacity: 0.5;
         }
-        .pulse-button {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .5; }
-        }
+      }
     </style>
-</head>
-<body class="font-sans bg-gray-50">
+  </head>
+  <body class="font-sans bg-gray-50">
     <!-- Header -->
     <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <i class="fas fa-tooth text-3xl mr-3"></i>
-                    <div>
-                        <h1 class="text-xl font-bold">Dr HASBI OTHMAN</h1>
-                        <p class="text-sm opacity-90">Chirurgien Dentiste</p>
-                    </div>
-                </div>
-                <nav class="hidden md:flex space-x-8">
-                    <a href="#services" class="hover:text-blue-200 transition duration-300">Services</a>
-                    <a href="#about" class="hover:text-blue-200 transition duration-300">À Propos</a>
-                    <a href="#contact" class="hover:text-blue-200 transition duration-300">Contact</a>
-                    <a href="#appointment" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition duration-300">RDV</a>
-                </nav>
+      <div class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <i class="fas fa-tooth text-3xl mr-3"></i>
+            <div>
+              <h1 class="text-xl font-bold">Dr HASBI OTHMAN</h1>
+              <p class="text-sm opacity-90">Chirurgien Dentiste</p>
             </div>
+          </div>
+          <nav class="hidden md:flex space-x-8">
+            <a
+              href="#services"
+              class="hover:text-blue-200 transition duration-300"
+              >Services</a
+            >
+            <a href="#about" class="hover:text-blue-200 transition duration-300"
+              >À Propos</a
+            >
+            <a
+              href="#contact"
+              class="hover:text-blue-200 transition duration-300"
+              >Contact</a
+            >
+            <button
+              onclick="openModal()"
+              class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition duration-300 font-semibold focus:outline-none"
+              type="button"
+            >
+              Prendre RDV
+            </button>
+          </nav>
         </div>
+      </div>
     </header>
 
     <!-- Hero Section -->
     <section class="gradient-bg text-white py-20">
-        <div class="container mx-auto px-6 text-center">
-            <div class="floating-animation">
-                <i class="fas fa-user-md text-6xl mb-6"></i>
-            </div>
-            <h2 class="text-5xl font-bold mb-6">Votre Sourire, Notre Priorité</h2>
-            <p class="text-xl mb-8 max-w-3xl mx-auto leading-relaxed">
-                Cabinet dentaire moderne du Dr HASBI OTHMAN à Bouskoura. 
-                Soins dentaires de qualité avec un tarif unique de <span class="font-bold text-yellow-300">200 DH</span> pour tous nos services.
-            </p>
-            <div class="flex flex-col md:flex-row gap-4 justify-center">
-                <a href="#appointment" class="bg-yellow-400 text-blue-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 transition duration-300 transform hover:scale-105">
-                    Prendre RDV Maintenant
-                </a>
-                <a href="tel:0520467300" class="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-blue-600 transition duration-300">
-                    <i class="fas fa-phone mr-2"></i>0520 467 300
-                </a>
-            </div>
+      <div class="container mx-auto px-6 text-center">
+        <div class="floating-animation">
+          <i class="fas fa-user-md text-6xl mb-6"></i>
         </div>
+        <h2 class="text-5xl font-bold mb-6">Votre Sourire, Notre Priorité</h2>
+        <p class="text-xl mb-8 max-w-3xl mx-auto leading-relaxed">
+          Cabinet dentaire moderne du Dr HASBI OTHMAN à Bouskoura. Soins
+          dentaires de qualité avec un tarif unique de pour tous nos services.
+        </p>
+        <div class="flex flex-col md:flex-row gap-4 justify-center">
+          <a
+          onclick="openChat()"
+            class="bg-yellow-400 text-blue-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 transition duration-300 transform hover:scale-105"
+          >
+            Prendre RDV Maintenant
+          </a>
+          <a
+            href="tel:0520467300"
+            class="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-blue-600 transition duration-300"
+          >
+            <i class="fas fa-phone mr-2"></i>0520 467 300
+          </a>
+        </div>
+      </div>
     </section>
 
     <!-- Services Section -->
     <section id="services" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16">
-                <h3 class="text-4xl font-bold text-gray-800 mb-4">Nos Services</h3>
-                <p class="text-xl text-gray-600 mb-8">Tous nos traitements à un prix unique de 200 DH</p>
-                <div class="w-24 h-1 bg-blue-500 mx-auto"></div>
-            </div>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-500">
-                    <div class="text-center">
-                        <i class="fas fa-tooth text-4xl text-blue-500 mb-4"></i>
-                        <h4 class="text-xl font-bold mb-3">Soins Dentaires</h4>
-                        <p class="text-gray-600 mb-4">Caries, détartrage, obturations</p>
-                        <div class="text-2xl font-bold text-blue-600">200 DH</div>
-                    </div>
-                </div>
-                
-                <div class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-500">
-                    <div class="text-center">
-                        <i class="fas fa-cut text-4xl text-green-500 mb-4"></i>
-                        <h4 class="text-xl font-bold mb-3">Chirurgie</h4>
-                        <p class="text-gray-600 mb-4">Extractions, chirurgie orale</p>
-                        <div class="text-2xl font-bold text-green-600">200 DH</div>
-                    </div>
-                </div>
-                
-                <div class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-purple-500">
-                    <div class="text-center">
-                        <i class="fas fa-align-center text-4xl text-purple-500 mb-4"></i>
-                        <h4 class="text-xl font-bold mb-3">Orthodontie</h4>
-                        <p class="text-gray-600 mb-4">Appareils dentaires, alignement</p>
-                        <div class="text-2xl font-bold text-purple-600">200 DH</div>
-                    </div>
-                </div>
-                
-                <div class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-yellow-500">
-                    <div class="text-center">
-                        <i class="fas fa-crown text-4xl text-yellow-500 mb-4"></i>
-                        <h4 class="text-xl font-bold mb-3">Prothèses</h4>
-                        <p class="text-gray-600 mb-4">Couronnes, bridges, dentiers</p>
-                        <div class="text-2xl font-bold text-yellow-600">200 DH</div>
-                    </div>
-                </div>
-                
-                <div class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-pink-500">
-                    <div class="text-center">
-                        <i class="fas fa-star text-4xl text-pink-500 mb-4"></i>
-                        <h4 class="text-xl font-bold mb-3">Blanchiment</h4>
-                        <p class="text-gray-600 mb-4">Blanchiment des dents</p>
-                        <div class="text-2xl font-bold text-pink-600">200 DH</div>
-                    </div>
-                </div>
-                
-                <div class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-red-500">
-                    <div class="text-center">
-                        <i class="fas fa-heartbeat text-4xl text-red-500 mb-4"></i>
-                        <h4 class="text-xl font-bold mb-3">Parodontie</h4>
-                        <p class="text-gray-600 mb-4">Traitement des gencives</p>
-                        <div class="text-2xl font-bold text-red-600">200 DH</div>
-                    </div>
-                </div>
-                
-                <div class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-indigo-500">
-                    <div class="text-center">
-                        <i class="fas fa-x-ray text-4xl text-indigo-500 mb-4"></i>
-                        <h4 class="text-xl font-bold mb-3">Radiologie</h4>
-                        <p class="text-gray-600 mb-4">Radiographies dentaires</p>
-                        <div class="text-2xl font-bold text-indigo-600">200 DH</div>
-                    </div>
-                </div>
-                
-                <div class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-teal-500">
-                    <div class="text-center">
-                        <i class="fas fa-smile text-4xl text-teal-500 mb-4"></i>
-                        <h4 class="text-xl font-bold mb-3">Gencives</h4>
-                        <p class="text-gray-600 mb-4">Maladies des gencives</p>
-                        <div class="text-2xl font-bold text-teal-600">200 DH</div>
-                    </div>
-                </div>
-            </div>
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h3 class="text-4xl font-bold text-gray-800 mb-4">Nos Services</h3>
+          <p class="text-xl text-gray-600 mb-8">
+            Tous nos traitements à un prix unique de
+          </p>
+          <div class="w-24 h-1 bg-blue-500 mx-auto"></div>
         </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div
+            class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-500"
+          >
+            <div class="text-center">
+              <i class="fas fa-tooth text-4xl text-blue-500 mb-4"></i>
+              <h4 class="text-xl font-bold mb-3">Soins Dentaires</h4>
+              <p class="text-gray-600 mb-4">Caries, détartrage, obturations</p>
+              <div class="text-2xl font-bold text-blue-600"></div>
+            </div>
+          </div>
+
+          <div
+            class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-500"
+          >
+            <div class="text-center">
+              <i class="fas fa-cut text-4xl text-green-500 mb-4"></i>
+              <h4 class="text-xl font-bold mb-3">Chirurgie</h4>
+              <p class="text-gray-600 mb-4">Extractions, chirurgie orale</p>
+              <div class="text-2xl font-bold text-green-600"></div>
+            </div>
+          </div>
+
+          <div
+            class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-purple-500"
+          >
+            <div class="text-center">
+              <i class="fas fa-align-center text-4xl text-purple-500 mb-4"></i>
+              <h4 class="text-xl font-bold mb-3">Orthodontie</h4>
+              <p class="text-gray-600 mb-4">Appareils dentaires, alignement</p>
+              <div class="text-2xl font-bold text-purple-600"></div>
+            </div>
+          </div>
+
+          <div
+            class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-yellow-500"
+          >
+            <div class="text-center">
+              <i class="fas fa-crown text-4xl text-yellow-500 mb-4"></i>
+              <h4 class="text-xl font-bold mb-3">Prothèses</h4>
+              <p class="text-gray-600 mb-4">Couronnes, bridges, dentiers</p>
+              <div class="text-2xl font-bold text-yellow-600"></div>
+            </div>
+          </div>
+
+          <div
+            class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-pink-500"
+          >
+            <div class="text-center">
+              <i class="fas fa-star text-4xl text-pink-500 mb-4"></i>
+              <h4 class="text-xl font-bold mb-3">Blanchiment</h4>
+              <p class="text-gray-600 mb-4">Blanchiment des dents</p>
+              <div class="text-2xl font-bold text-pink-600"></div>
+            </div>
+          </div>
+
+          <div
+            class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-red-500"
+          >
+            <div class="text-center">
+              <i class="fas fa-heartbeat text-4xl text-red-500 mb-4"></i>
+              <h4 class="text-xl font-bold mb-3">Parodontie</h4>
+              <p class="text-gray-600 mb-4">Traitement des gencives</p>
+              <div class="text-2xl font-bold text-red-600"></div>
+            </div>
+          </div>
+
+          <div
+            class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-indigo-500"
+          >
+            <div class="text-center">
+              <i class="fas fa-x-ray text-4xl text-indigo-500 mb-4"></i>
+              <h4 class="text-xl font-bold mb-3">Radiologie</h4>
+              <p class="text-gray-600 mb-4">Radiographies dentaires</p>
+              <div class="text-2xl font-bold text-indigo-600"></div>
+            </div>
+          </div>
+
+          <div
+            class="service-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-teal-500"
+          >
+            <div class="text-center">
+              <i class="fas fa-smile text-4xl text-teal-500 mb-4"></i>
+              <h4 class="text-xl font-bold mb-3">Gencives</h4>
+              <p class="text-gray-600 mb-4">Maladies des gencives</p>
+              <div class="text-2xl font-bold text-teal-600"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Price Highlight Section -->
-    <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
-        <div class="container mx-auto px-6 text-center">
-            <h3 class="text-4xl font-bold mb-6">Tarif Unique et Transparent</h3>
-            <div class="flex justify-center items-center mb-6">
-                <div class="bg-white text-blue-600 rounded-full p-8">
-                    <div class="text-6xl font-bold">200</div>
-                    <div class="text-2xl font-semibold">DH</div>
-                </div>
-            </div>
-            <p class="text-xl mb-8">Tous nos services dentaires au même prix, sans surprise</p>
-            <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                <div class="bg-white/10 p-6 rounded-lg">
-                    <i class="fas fa-check-circle text-3xl mb-3"></i>
-                    <p>Pas de frais cachés</p>
-                </div>
-                <div class="bg-white/10 p-6 rounded-lg">
-                    <i class="fas fa-heart text-3xl mb-3"></i>
-                    <p>Soins de qualité</p>
-                </div>
-                <div class="bg-white/10 p-6 rounded-lg">
-                    <i class="fas fa-clock text-3xl mb-3"></i>
-                    <p>Consultation rapide</p>
-                </div>
-            </div>
+    <section
+      class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16"
+    >
+      <div class="container mx-auto px-6 text-center">
+        <h3 class="text-4xl font-bold mb-6">Tarif Unique et Transparent</h3>
+
+        <p class="text-xl mb-8">
+          Tous nos services dentaires au même prix, sans surprise
+        </p>
+        <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div class="bg-white/10 p-6 rounded-lg">
+            <i class="fas fa-check-circle text-3xl mb-3"></i>
+            <p>Pas de frais cachés</p>
+          </div>
+          <div class="bg-white/10 p-6 rounded-lg">
+            <i class="fas fa-heart text-3xl mb-3"></i>
+            <p>Soins de qualité</p>
+          </div>
+          <div class="bg-white/10 p-6 rounded-lg">
+            <i class="fas fa-clock text-3xl mb-3"></i>
+            <p>Consultation rapide</p>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- About Section -->
     <section id="about" class="py-20 bg-gray-100">
-        <div class="container mx-auto px-6">
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h3 class="text-4xl font-bold text-gray-800 mb-6">Dr HASBI OTHMAN</h3>
-                    <p class="text-lg text-gray-600 mb-6 leading-relaxed">
-                        Chirurgien dentiste expérimenté, le Dr HASBI OTHMAN vous accueille dans son cabinet moderne 
-                        situé à Bouskoura. Avec une approche personnalisée et des techniques de pointe, 
-                        nous vous garantissons des soins dentaires de qualité supérieure.
-                    </p>
-                    <div class="space-y-4">
-                        <div class="flex items-center">
-                            <i class="fas fa-graduation-cap text-blue-500 text-xl mr-3"></i>
-                            <span>Chirurgien Dentiste Qualifié</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-award text-blue-500 text-xl mr-3"></i>
-                            <span>Années d'Expérience</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-users text-blue-500 text-xl mr-3"></i>
-                            <span>Centaines de Patients Satisfaits</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <div class="bg-white p-8 rounded-xl shadow-lg">
-                        <i class="fas fa-user-md text-8xl text-blue-500 mb-6"></i>
-                        <h4 class="text-2xl font-bold mb-4">Votre Dentiste de Confiance</h4>
-                        <p class="text-gray-600">À votre service pour un sourire éclatant</p>
-                    </div>
-                </div>
+      <div class="container mx-auto px-6">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <h3 class="text-4xl font-bold text-gray-800 mb-6">
+              Dr HASBI OTHMAN
+            </h3>
+            <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+              Chirurgien dentiste expérimenté, le Dr HASBI OTHMAN vous accueille
+              dans son cabinet moderne situé à Bouskoura. Avec une approche
+              personnalisée et des techniques de pointe, nous vous garantissons
+              des soins dentaires de qualité supérieure.
+            </p>
+            <div class="space-y-4">
+              <div class="flex items-center">
+                <i class="fas fa-graduation-cap text-blue-500 text-xl mr-3"></i>
+                <span>Chirurgien Dentiste Qualifié</span>
+              </div>
+              <div class="flex items-center">
+                <i class="fas fa-award text-blue-500 text-xl mr-3"></i>
+                <span>Années d'Expérience</span>
+              </div>
+              <div class="flex items-center">
+                <i class="fas fa-users text-blue-500 text-xl mr-3"></i>
+                <span>Centaines de Patients Satisfaits</span>
+              </div>
             </div>
+          </div>
+          <div class="text-center">
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+              <i class="fas fa-user-md text-8xl text-blue-500 mb-6"></i>
+              <h4 class="text-2xl font-bold mb-4">
+                Votre Dentiste de Confiance
+              </h4>
+              <p class="text-gray-600">
+                À votre service pour un sourire éclatant
+              </p>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- Contact & Location Section -->
     <section id="contact" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16">
-                <h3 class="text-4xl font-bold text-gray-800 mb-4">Nous Contacter</h3>
-                <div class="w-24 h-1 bg-blue-500 mx-auto"></div>
-            </div>
-            
-            <div class="grid lg:grid-cols-2 gap-12">
-                <div class="space-y-8">
-                    <div class="bg-blue-50 p-6 rounded-lg">
-                        <h4 class="text-2xl font-bold mb-4 text-blue-800">Informations de Contact</h4>
-                        <div class="space-y-4">
-                            <div class="flex items-center">
-                                <i class="fas fa-map-marker-alt text-blue-500 text-xl mr-4"></i>
-                                <div>
-                                    <strong>Adresse:</strong><br>
-                                    N° 343 bloc 20, annasr victoria<br>
-                                    Ouled Saleh, Nouaceur, Bouskoura 20180<br>
-                                    <span class="text-sm text-gray-600">(2ème étage)</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-phone text-blue-500 text-xl mr-4"></i>
-                                <div>
-                                    <strong>Téléphones:</strong><br>
-                                    <a href="tel:0520467300" class="text-blue-600 hover:text-blue-800">0520 467 300</a><br>
-                                    <a href="tel:0656609369" class="text-blue-600 hover:text-blue-800">0656 609 369</a>
-                                </div>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-clock text-blue-500 text-xl mr-4"></i>
-                                <div>
-                                    <strong>Horaires:</strong><br>
-                                    Lun-Ven: 9h00 - 18h00<br>
-                                    Samedi: 9h00 - 16h00
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-green-50 p-6 rounded-lg">
-                        <h4 class="text-xl font-bold mb-4 text-green-800">Prenez Rendez-Vous</h4>
-                        <p class="mb-4">Utilisez notre assistant virtuel pour prendre rendez-vous rapidement !</p>
-                        <div class="pulse-button bg-green-500 text-white px-6 py-3 rounded-lg inline-block">
-                            💬 Chat en bas à droite
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-gray-100 rounded-lg p-6">
-                    <h4 class="text-2xl font-bold mb-4 text-center">Notre Localisation</h4>
-                    <div class="bg-white p-4 rounded-lg shadow">
-                        <div class="text-center py-20">
-                            <i class="fas fa-map-marked-alt text-6xl text-blue-500 mb-4"></i>
-                            <p class="text-lg">Bouskoura, Nouaceur</p>
-                            <p class="text-gray-600">Annasr Victoria, Bloc 20</p>
-                            <button class="mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
-                                Voir sur Maps
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h3 class="text-4xl font-bold text-gray-800 mb-4">Nous Contacter</h3>
+          <div class="w-24 h-1 bg-blue-500 mx-auto"></div>
         </div>
+
+        <div class="grid lg:grid-cols-2 gap-12">
+          <div class="space-y-8">
+            <div class="bg-blue-50 p-6 rounded-lg">
+              <h4 class="text-2xl font-bold mb-4 text-blue-800">
+                Informations de Contact
+              </h4>
+              <div class="space-y-4">
+                <div class="flex items-center">
+                  <i
+                    class="fas fa-map-marker-alt text-blue-500 text-xl mr-4"
+                  ></i>
+                  <div>
+                    <strong>Adresse:</strong><br />
+                    N° 343 bloc 20, annasr victoria<br />
+                    Ouled Saleh, Nouaceur, Bouskoura 20180<br />
+                    <span class="text-sm text-gray-600">(2ème étage)</span>
+                  </div>
+                </div>
+                <div class="flex items-center">
+                  <i class="fas fa-phone text-blue-500 text-xl mr-4"></i>
+                  <div>
+                    <strong>Téléphones:</strong><br />
+                    <a
+                      href="tel:0520467300"
+                      class="text-blue-600 hover:text-blue-800"
+                      >0520 467 300</a
+                    ><br />
+                    <a
+                      href="tel:0656609369"
+                      class="text-blue-600 hover:text-blue-800"
+                      >0656 609 369</a
+                    >
+                  </div>
+                </div>
+                <div class="flex items-center">
+                  <i class="fas fa-clock text-blue-500 text-xl mr-4"></i>
+                  <div>
+                    <strong>Horaires:</strong><br />
+                    Lun-Ven: 9h00 - 18h00<br />
+                    Samedi: 9h00 - 16h00
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-green-50 p-6 rounded-lg">
+              <h4 class="text-xl font-bold mb-4 text-green-800">
+                Prenez Rendez-Vous
+              </h4>
+              <p class="mb-4">
+                Utilisez notre assistant virtuel pour prendre rendez-vous
+                rapidement !
+              </p>
+              <div
+                class="pulse-button bg-green-500 text-white px-6 py-3 rounded-lg inline-block"
+              >
+                💬 Chat en bas à droite
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gray-100 rounded-lg p-6">
+            <h4 class="text-2xl font-bold mb-4 text-center">
+              Notre Localisation
+            </h4>
+            <div class="bg-white p-4 rounded-lg shadow">
+              <div class="text-center py-20">
+                <i
+                  class="fas fa-map-marked-alt text-6xl text-blue-500 mb-4"
+                ></i>
+                <p class="text-lg">Bouskoura, Nouaceur</p>
+                <p class="text-gray-600">Annasr Victoria, Bloc 20</p>
+                <button
+                  class="mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
+                >
+                  Voir sur Maps
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- CTA Section -->
     <section id="appointment" class="gradient-bg text-white py-20">
-        <div class="container mx-auto px-6 text-center">
-            <h3 class="text-4xl font-bold mb-6">Prêt à Retrouver Votre Sourire ?</h3>
-            <p class="text-xl mb-8 max-w-2xl mx-auto">
-                Prenez rendez-vous dès aujourd'hui et bénéficiez de nos soins dentaires de qualité 
-                à un tarif exceptionnel de 200 DH seulement.
-            </p>
-            
-            <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
-                <div class="bg-white text-blue-600 px-8 py-6 rounded-xl shadow-lg">
-                    <div class="text-3xl font-bold mb-2">200 DH</div>
-                    <div class="text-sm">Tous Services</div>
-                </div>
-                
-                <div class="flex flex-col md:flex-row gap-4">
-                    <a href="tel:0520467300" class="bg-yellow-400 text-blue-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 transition duration-300 transform hover:scale-105">
-                        <i class="fas fa-phone mr-2"></i>Appeler Maintenant
-                    </a>
-                    <button onclick="openChat()" class="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-blue-600 transition duration-300">
-                        <i class="fas fa-comments mr-2"></i>Chat en Ligne
-                    </button>
-                </div>
-            </div>
+      <div class="container mx-auto px-6 text-center">
+        <h3 class="text-4xl font-bold mb-6">
+          Prêt à Retrouver Votre Sourire ?
+        </h3>
+        <p class="text-xl mb-8 max-w-2xl mx-auto">
+          Prenez rendez-vous dès aujourd'hui et bénéficiez de nos soins
+          dentaires de qualité à un tarif exceptionnel de seulement.
+        </p>
+
+        <div
+          class="flex flex-col md:flex-row gap-6 justify-center items-center"
+        >
+          <div class="flex flex-col md:flex-row gap-4">
+            <a
+              href="tel:0520467300"
+              class="bg-yellow-400 text-blue-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 transition duration-300 transform hover:scale-105"
+            >
+              <i class="fas fa-phone mr-2"></i>Appeler Maintenant
+            </a>
+            <button
+              onclick="openChat()"
+              class="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-blue-600 transition duration-300"
+            >
+              <i class="fas fa-comments mr-2"></i>Chat en Ligne
+            </button>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
-        <div class="container mx-auto px-6">
-            <div class="grid md:grid-cols-3 gap-8">
-                <div>
-                    <div class="flex items-center mb-4">
-                        <i class="fas fa-tooth text-2xl mr-3"></i>
-                        <h4 class="text-xl font-bold">Dr HASBI OTHMAN</h4>
-                    </div>
-                    <p class="text-gray-400">
-                        Votre cabinet dentaire de confiance à Bouskoura. 
-                        Des soins de qualité à prix accessible.
-                    </p>
-                </div>
-                
-                <div>
-                    <h4 class="text-xl font-bold mb-4">Services</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li>• Soins Dentaires - 200 DH</li>
-                        <li>• Chirurgie - 200 DH</li>
-                        <li>• Orthodontie - 200 DH</li>
-                        <li>• Blanchiment - 200 DH</li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h4 class="text-xl font-bold mb-4">Contact</h4>
-                    <div class="space-y-2 text-gray-400">
-                        <p><i class="fas fa-phone mr-2"></i>0520 467 300</p>
-                        <p><i class="fas fa-phone mr-2"></i>0656 609 369</p>
-                        <p><i class="fas fa-map-marker-alt mr-2"></i>Bouskoura, Nouaceur</p>
-                    </div>
-                </div>
+      <div class="container mx-auto px-6">
+        <div class="grid md:grid-cols-3 gap-8">
+          <div>
+            <div class="flex items-center mb-4">
+              <i class="fas fa-tooth text-2xl mr-3"></i>
+              <h4 class="text-xl font-bold">Dr HASBI OTHMAN</h4>
             </div>
-            
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2024 Dr HASBI OTHMAN - Cabinet Dentaire. Tous droits réservés.</p>
+            <p class="text-gray-400">
+              Votre cabinet dentaire de confiance à Bouskoura. Des soins de
+              qualité à prix accessible.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="text-xl font-bold mb-4">Services</h4>
+            <ul class="space-y-2 text-gray-400">
+              <li>• Soins Dentaires -</li>
+              <li>• Chirurgie -</li>
+              <li>• Orthodontie -</li>
+              <li>• Blanchiment -</li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-xl font-bold mb-4">Contact</h4>
+            <div class="space-y-2 text-gray-400">
+              <p><i class="fas fa-phone mr-2"></i>0520 467 300</p>
+              <p><i class="fas fa-phone mr-2"></i>0656 609 369</p>
+              <p>
+                <i class="fas fa-map-marker-alt mr-2"></i>Bouskoura, Nouaceur
+              </p>
             </div>
+          </div>
         </div>
+
+        <div
+          class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400"
+        >
+          <p>
+            &copy; 2024 Dr HASBI OTHMAN - Cabinet Dentaire. Tous droits
+            réservés.
+          </p>
+        </div>
+      </div>
     </footer>
 
-  <script type="module">
-	import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+    <script type="module">
+      import { createChat } from "https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js";
 
-	createChat({
-		webhookUrl: 'https://houssamdahbi.app.n8n.cloud/webhook/f703ac47-8f93-46a3-ab8f-ae16d56b5d09/chat'
-	});
-</script>
+      createChat({
+        webhookUrl: `${CONFIG.BASE_URL}/webhook/${CONFIG.API_KEY}/chat`,
+        initialMessages: [
+			{
+				text: "👋 Hi! Welcome to Clinic Chat Assistant. How can I help you today?",
+				role: "system"
+			}
+		]
+      });
+    </script>
 
     <!-- Smooth Scrolling -->
     <script>
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
             });
+          }
         });
+      });
+
+      // Load config.js and then initialize chat
+      function loadConfigAndInitChat() {
+        const script = document.createElement("script");
+        script.src = "config.js";
+        script.onload = function () {
+          if (typeof CONFIG !== "undefined") {
+            import(
+              "https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js"
+            ).then(({ createChat }) => {
+              createChat({
+                webhookUrl: `${CONFIG.BASE_URL}/webhook/${CONFIG.API_KEY}/chat`,
+              });
+            });
+          }
+        };
+        document.head.appendChild(script);
+      }
+      loadConfigAndInitChat();
+
+      // Optional: Expose openChat for button
+      function openChat() {
+        const chatWidget = document.querySelector("n8n-chat");
+        if (chatWidget && typeof chatWidget.open === "function") {
+          chatWidget.open();
+        }
+      }
+      window.openChat = openChat;
+      function openModal(){
+        window.openChat = openChat;
+
+      }
     </script>
 
     <div id="n8n-chat"></div>
-</body>
+  </body>
 </html>
