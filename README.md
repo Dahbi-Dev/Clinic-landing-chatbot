@@ -2,7 +2,7 @@ Chatbot workflow in n8n
 chatbot for clinic offers it services and prices and handle appointements to excel or sheets :
 
 <img width="1891" height="923" alt="image" src="https://github.com/user-attachments/assets/06be6d86-cac4-4055-8f03-4235f9f2b368" />
-chatbot ui :
+chatbot ui : < /br>
 
 <img width="448" height="769" alt="image" src="https://github.com/user-attachments/assets/694bedee-3e68-4155-9b57-22e8ef2c7d29" />
 
