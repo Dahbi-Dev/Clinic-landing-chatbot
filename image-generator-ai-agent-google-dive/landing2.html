@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Image Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white shadow-lg rounded-xl p-6 w-full max-w-md text-center">
+    <h1 class="text-2xl font-bold mb-4">AI Image Generator 🤖</h1>
+    
+    <!-- Prompt Input -->
+    <input id="promptInput" type="text" placeholder="Enter your prompt..."
+      class="w-full border rounded-lg p-2 mb-4 focus:ring-2 focus:ring-indigo-500 outline-none" />
+
+    <!-- Generate Button -->
+    <button onclick="sendPrompt()" 
+      class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
+      Generate Image
+    </button>
+
+    <!-- Waiting Animation -->
+    <div id="waiting" class="hidden mt-4 text-gray-600 flex justify-center items-center">
+      <svg class="animate-spin h-6 w-6 mr-2 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+      </svg>
+      <span>Generating your image...</span>
+    </div>
+
+    <!-- Chat History -->
+    <div id="history" class="mt-6 text-left space-y-4 max-h-64 overflow-y-auto"></div>
+  </div>
+
+  <script>
+    const WEBHOOK_URL = "https://houssamdahbi.app.n8n.cloud/webhook/a3ad186e-2623-4480-9ed7-8ab2358be573/chat"; // active
+    let sessionId = localStorage.getItem("sessionId");
+
+    if (!sessionId) {
+      sessionId = "sess-" + Math.random().toString(36).substring(2, 12);
+      localStorage.setItem("sessionId", sessionId);
+    }
+
+    async function sendPrompt() {
+      const prompt = document.getElementById("promptInput").value.trim();
+      if (!prompt) {
+        alert("Please enter a prompt.");
+        return;
+      }
+
+      const waiting = document.getElementById("waiting");
+      const history = document.getElementById("history");
+
+      // Show waiting spinner
+      waiting.classList.remove("hidden");
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt, sessionId })
+        });
+
+        const data = await res.json();
+        console.log("Response:", data);
+
+        // Hide loader
+        waiting.classList.add("hidden");
+
+        // Append result to chat history
+        const div = document.createElement("div");
+        div.className = "p-3 border rounded-lg bg-gray-50";
+
+        let html = `<p class="font-medium text-gray-800">Prompt:</p>
+                    <p class="mb-2 text-gray-600">${prompt}</p>`;
+
+        if (data.image) {
+          html += `<img src="${data.image}" 
+                       class="rounded-lg shadow-md mb-2 max-h-48 mx-auto" alt="Generated Image"/>`;
+        }
+
+        if (data.Download) {
+          html += `<a href="${data.Download}" target="_blank"
+                      class="inline-block bg-green-600 text-white px-3 py-1 rounded-lg hover:bg-green-700 transition">
+                      ⬇ Download</a>`;
+        }
+
+        div.innerHTML = html;
+        history.appendChild(div);
+      } catch (err) {
+        waiting.classList.add("hidden");
+        alert("❌ Error generating image. Check console.");
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
