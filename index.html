@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Showcase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes cardPulse {
+            0%, 100% {
+                transform: translateY(-8px) scale(1);
+            }
+            50% {
+                transform: translateY(-8px) scale(1.02);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+        .stagger-6 { animation-delay: 0.6s; }
+        
+        .loading-pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 min-h-screen text-white">
+    <!-- Header -->
+    <header class="container mx-auto px-6 py-8">
+        <div class="text-center">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent fade-in-up">
+                My Projects
+            </h1>
+            <p class="text-xl text-gray-300 fade-in-up stagger-1">
+                Explore my latest work and creations
+            </p>
+        </div>
+    </header>
+
+    <!-- Filter Buttons -->
+    <div class="container mx-auto px-6 mb-8">
+        <div class="flex flex-wrap justify-center gap-4 fade-in-up stagger-2">
+            <button onclick="filterProjects('all')" class="filter-btn bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 active">
+                All Projects
+            </button>
+            <button onclick="filterProjects('web')" class="filter-btn bg-gray-700 hover:bg-gray-600 px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105">
+                Web Apps
+            </button>
+            <button onclick="filterProjects('ai')" class="filter-btn bg-gray-700 hover:bg-gray-600 px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105">
+                AI Tools
+            </button>
+            <button onclick="filterProjects('mobile')" class="filter-btn bg-gray-700 hover:bg-gray-600 px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105">
+                Mobile
+            </button>
+        </div>
+    </div>
+
+    <!-- Projects Container -->
+    <div class="container mx-auto px-6 pb-12">
+        <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Projects will be loaded here -->
+        </div>
+        
+        <!-- Load More Button -->
+        <div class="text-center mt-12">
+            <button id="loadMoreBtn" onclick="loadMoreProjects()" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 px-8 py-3 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hidden">
+                Load More Projects
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Animation -->
+    <div id="loading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-gray-800 p-8 rounded-lg">
+            <div class="flex items-center space-x-4">
+                <div class="w-8 h-8 bg-blue-500 rounded-full loading-pulse"></div>
+                <span class="text-xl">Loading Projects...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample JSON data - replace with actual JSON file
+        const projectsData = {
+            "projects": [
+                {
+                    "id": 1,
+                    "title": "Clinic Agent",
+                    "description": "AI-powered healthcare assistant for managing patient appointments and medical records.",
+                    "category": "ai",
+                    "tags": ["AI", "Healthcare", "React"],
+                    "image": "/clinic-agent/img.jpg",
+                    "link": "clinic-agent/index.html",
+                    "status": "completed"
+                },
+                {
+                    "id": 2,
+                    "title": "Image Generator",
+                    "description": "Advanced AI image generation tool with custom prompts and style controls.",
+                    "category": "ai",
+                    "tags": ["AI", "Image Generation", "Machine Learning"],
+                    "image": "/image-generator/img.jpg",
+                    "link": "image-generator/landing2.html",
+                    "status": "completed"
+                },
+                // {
+                //     "id": 3,
+                //     "title": "E-Commerce Platform",
+                //     "description": "Full-stack e-commerce solution with payment integration and inventory management.",
+                //     "category": "web",
+                //     "tags": ["React", "Node.js", "MongoDB"],
+                //     "image": "https://img.freepik.com/free-vector/abstract-grunge-style-coming-soon-with-black-splatter_1017-26690.jpg",
+                //     "link": "#",
+                //     "status": "in-progress"
+                // },
+                // {
+                //     "id": 4,
+                //     "title": "Task Manager App",
+                //     "description": "Mobile-first task management application with team collaboration features.",
+                //     "category": "mobile",
+                //     "tags": ["React Native", "Firebase", "Redux"],
+                //     "image": "https://img.freepik.com/free-vector/abstract-grunge-style-coming-soon-with-black-splatter_1017-26690.jpg",
+                //     "link": "#",
+                //     "status": "completed"
+                // },
+                // {
+                //     "id": 5,
+                //     "title": "Weather Dashboard",
+                //     "description": "Real-time weather monitoring dashboard with interactive maps and forecasts.",
+                //     "category": "web",
+                //     "tags": ["Vue.js", "API Integration", "Charts"],
+                //     "image": "https://img.freepik.com/free-vector/abstract-grunge-style-coming-soon-with-black-splatter_1017-26690.jpg",
+                //     "link": "#",
+                //     "status": "completed"
+                // },
+                // {
+                //     "id": 6,
+                //     "title": "Social Media Bot",
+                //     "description": "Intelligent social media automation bot with sentiment analysis.",
+                //     "category": "ai",
+                //     "tags": ["Python", "NLP", "Automation"],
+                //     "image": "https://img.freepik.com/free-vector/abstract-grunge-style-coming-soon-with-black-splatter_1017-26690.jpg",
+                //     "link": "#",
+                //     "status": "completed"
+                // }
+            ]
+        };
+
+        let currentProjects = [];
+        let filteredProjects = [];
+        let currentPage = 0;
+        const projectsPerPage = 6;
+        let currentFilter = 'all';
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                loadProjects();
+                document.getElementById('loading').style.display = 'none';
+            }, 1000);
+        });
+
+        function loadProjects() {
+            currentProjects = projectsData.projects;
+            filteredProjects = [...currentProjects];
+            currentPage = 0;
+            displayProjects();
+        }
+
+        function displayProjects() {
+            const grid = document.getElementById('projectsGrid');
+            const startIndex = currentPage * projectsPerPage;
+            const endIndex = startIndex + projectsPerPage;
+            const projectsToShow = filteredProjects.slice(0, endIndex);
+            
+            grid.innerHTML = '';
+            
+            projectsToShow.forEach((project, index) => {
+                const projectCard = createProjectCard(project, index);
+                grid.appendChild(projectCard);
+            });
+
+            // Show/hide load more button
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            if (endIndex < filteredProjects.length) {
+                loadMoreBtn.classList.remove('hidden');
+            } else {
+                loadMoreBtn.classList.add('hidden');
+            }
+        }
+
+        function createProjectCard(project, index) {
+            const card = document.createElement('div');
+            const staggerClass = `stagger-${(index % 6) + 1}`;
+            const statusColor = project.status === 'completed' ? 'bg-green-500' : 'bg-yellow-500';
+            
+            card.className = `bg-gray-800 rounded-xl overflow-hidden shadow-xl card-hover transition-all duration-300 transform hover:shadow-2xl fade-in-up ${staggerClass} opacity-0`;
+            
+            card.innerHTML = `
+                <div class="relative">
+                    <img src="${project.image}" alt="${project.title}" class="w-full h-48 object-cover">
+                    <div class="absolute top-4 right-4">
+                        <span class="${statusColor} text-white text-xs px-2 py-1 rounded-full">${project.status}</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2 text-white">${project.title}</h3>
+                    <p class="text-gray-300 mb-4 text-sm">${project.description}</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${project.tags.map(tag => `<span class="bg-blue-600 text-xs px-2 py-1 rounded text-white">${tag}</span>`).join('')}
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-gray-400 uppercase tracking-wide">${project.category}</span>
+                        <a href="${project.link}" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:from-blue-500 hover:to-purple-500 transition-all duration-300 transform hover:scale-105" ${project.link === '#' ? 'onclick="return false;" style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                            View Project
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function filterProjects(category) {
+            currentFilter = category;
+            currentPage = 0;
+            
+            // Update filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-600');
+                btn.classList.add('bg-gray-700');
+            });
+            event.target.classList.add('active', 'bg-blue-600');
+            event.target.classList.remove('bg-gray-700');
+            
+            // Filter projects
+            if (category === 'all') {
+                filteredProjects = [...currentProjects];
+            } else {
+                filteredProjects = currentProjects.filter(project => project.category === category);
+            }
+            
+            displayProjects();
+        }
+
+        function loadMoreProjects() {
+            currentPage++;
+            displayProjects();
+        }
+
+        // Add some entrance animations
+        setTimeout(() => {
+            document.querySelectorAll('.fade-in-up').forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                }, index * 100);
+            });
+        }, 100);
+    </script>
+</body>
+</html>
