@@ -5,36 +5,377 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Image Generator</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+      animation: gradientFlow 12s ease infinite;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    @keyframes gradientFlow {
+      0%, 100% { background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%); }
+      25% { background: linear-gradient(135deg, #f093fb 0%, #f5576c 25%, #4facfe 50%, #667eea 75%, #764ba2 100%); }
+      50% { background: linear-gradient(135deg, #4facfe 0%, #667eea 25%, #764ba2 50%, #f093fb 75%, #f5576c 100%); }
+      75% { background: linear-gradient(135deg, #764ba2 0%, #f093fb 25%, #f5576c 50%, #4facfe 75%, #667eea 100%); }
+    }
+    
+    .floating-orbs {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(45deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      backdrop-filter: blur(20px);
+      animation: floatOrb 25s infinite linear;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+    }
+    
+    .orb:nth-child(1) { width: 120px; height: 120px; left: 5%; animation-delay: 0s; }
+    .orb:nth-child(2) { width: 80px; height: 80px; left: 15%; animation-delay: 3s; }
+    .orb:nth-child(3) { width: 160px; height: 160px; left: 25%; animation-delay: 6s; }
+    .orb:nth-child(4) { width: 60px; height: 60px; left: 35%; animation-delay: 9s; }
+    .orb:nth-child(5) { width: 100px; height: 100px; left: 45%; animation-delay: 12s; }
+    .orb:nth-child(6) { width: 140px; height: 140px; left: 55%; animation-delay: 15s; }
+    .orb:nth-child(7) { width: 70px; height: 70px; left: 65%; animation-delay: 18s; }
+    .orb:nth-child(8) { width: 110px; height: 110px; left: 75%; animation-delay: 21s; }
+    .orb:nth-child(9) { width: 90px; height: 90px; left: 85%; animation-delay: 24s; }
+    
+    @keyframes floatOrb {
+      0% {
+        transform: translateY(100vh) translateX(-50px) rotate(0deg) scale(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+        transform: translateY(90vh) translateX(0px) rotate(36deg) scale(1);
+      }
+      90% {
+        opacity: 1;
+        transform: translateY(10vh) translateX(50px) rotate(324deg) scale(1);
+      }
+      100% {
+        transform: translateY(-10vh) translateX(100px) rotate(360deg) scale(0);
+        opacity: 0;
+      }
+    }
+    
+    .glass-panel {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+      backdrop-filter: blur(25px);
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+      animation: panelGlow 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes panelGlow {
+      from { box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), 0 0 30px rgba(255, 255, 255, 0.1); }
+      to { box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2), 0 0 50px rgba(255, 255, 255, 0.2); }
+    }
+    
+    .input-glow {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(15px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .input-glow:focus {
+      border-color: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.3), 0 0 50px rgba(255, 120, 200, 0.2);
+      transform: scale(1.02);
+    }
+    
+    .btn-magic {
+      background: linear-gradient(135deg, #ff6b9d, #c44569, #f8b500, #ff9ff3);
+      background-size: 300% 300%;
+      animation: gradientShift 3s ease infinite;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-magic::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn-magic:hover::before {
+      left: 100%;
+    }
+    
+    .btn-magic:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 15px 40px rgba(255, 107, 157, 0.4);
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .loading-magic {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid #fff;
+      border-radius: 50%;
+      animation: magicSpin 1s linear infinite;
+    }
+    
+    @keyframes magicSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      font-weight: 600;
+      color: white;
+      animation: textPulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes textPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.05); }
+    }
+    
+    .history-item {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: slideInUp 0.6s ease-out;
+    }
+    
+    .history-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .download-btn {
+      background: linear-gradient(135deg, #00f2fe, #4facfe);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .download-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+    }
+    
+    .image-preview {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .image-preview::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .image-preview:hover::after {
+      opacity: 1;
+    }
+    
+    .content-container {
+      position: relative;
+      z-index: 10;
+      animation: fadeInScale 0.8s ease-out;
+    }
+    
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    
+    #three-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <div class="bg-white shadow-lg rounded-xl p-6 w-full max-w-md text-center h-auto">
-    <h1 class="text-2xl font-bold mb-4">AI Image Generator 🤖</h1>
+<body class="gradient-bg min-h-screen flex items-center justify-center">
+  <!-- Three.js Background -->
+  <div id="three-container"></div>
+  
+  <!-- Floating Orbs -->
+  <div class="floating-orbs">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="content-container glass-panel rounded-2xl p-8 w-full max-w-lg text-center">
+    <h1 class="text-3xl font-bold mb-6 text-white">
+      <span class="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent">
+        ✨ AI Image Generator 🤖
+      </span>
+    </h1>
     
     <!-- Prompt Input -->
-    <input id="promptInput" type="text" placeholder="Enter your prompt..."
-      class="w-full border rounded-lg p-2 mb-4 focus:ring-2 focus:ring-indigo-500 outline-none" />
+    <input 
+      id="promptInput" 
+      type="text" 
+      placeholder="Enter your magical prompt..."
+      class="w-full input-glow text-white placeholder-purple-200 rounded-xl p-4 mb-6 outline-none font-medium"
+    />
 
     <!-- Generate Button -->
-    <button onclick="sendPrompt()" 
-      class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
-      Generate Image
+    <button 
+      onclick="sendPrompt()" 
+      class="w-full btn-magic text-white font-bold py-4 px-6 rounded-xl mb-6 relative z-10"
+    >
+      🚀 Generate Image
     </button>
 
     <!-- Waiting Animation -->
-    <div id="waiting" class="hidden mt-4 text-gray-600 flex justify-center items-center">
-      <svg class="animate-spin h-6 w-6 mr-2 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-      </svg>
-      <span>Generating your image...</span>
+    <div id="waiting" class="hidden glass-panel rounded-xl p-6 mb-6">
+      <div class="loading-magic">
+        <div class="loading-spinner"></div>
+        <span class="loading-text">Crafting your masterpiece...</span>
+      </div>
+      <div class="mt-4 bg-white/20 rounded-full h-2 overflow-hidden">
+        <div class="bg-gradient-to-r from-pink-400 to-purple-500 h-full rounded-full animate-pulse"></div>
+      </div>
     </div>
 
     <!-- Chat History -->
-    <div id="history" class="mt-6 text-left space-y-4 max-h-84 overflow-y-auto"></div>
+    <div id="history" class="text-left space-y-4 max-h-96 overflow-y-auto"></div>
   </div>
 
   <script>
-    const WEBHOOK_URL = "https://houssamdahbi.app.n8n.cloud/webhook/a3ad186e-2623-4480-9ed7-8ab2358be573/chat"; // active
+    // Three.js Particle System
+    let scene, camera, renderer, particles;
+    
+    function initThreeJS() {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.getElementById('three-container').appendChild(renderer.domElement);
+
+      // Create magical particles
+      const particlesGeometry = new THREE.BufferGeometry();
+      const particlesCount = 150;
+      const posArray = new Float32Array(particlesCount * 3);
+      const colors = new Float32Array(particlesCount * 3);
+
+      for (let i = 0; i < particlesCount * 3; i += 3) {
+        posArray[i] = (Math.random() - 0.5) * 100;
+        posArray[i + 1] = (Math.random() - 0.5) * 100;
+        posArray[i + 2] = (Math.random() - 0.5) * 100;
+        
+        colors[i] = Math.random() * 0.5 + 0.5;     // Red
+        colors[i + 1] = Math.random() * 0.3 + 0.7; // Green  
+        colors[i + 2] = 1;                         // Blue
+      }
+
+      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+      particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.15,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.8,
+        blending: THREE.AdditiveBlending
+      });
+
+      particles = new THREE.Points(particlesGeometry, particlesMaterial);
+      scene.add(particles);
+
+      camera.position.z = 30;
+      animate();
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      particles.rotation.x += 0.0008;
+      particles.rotation.y += 0.0012;
+      particles.rotation.z += 0.0005;
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    window.addEventListener('load', initThreeJS);
+
+    // Main functionality
+    const WEBHOOK_URL = "https://houssamdahbi.app.n8n.cloud/webhook/a3ad186e-2623-4480-9ed7-8ab2358be573/chat";
     let sessionId = localStorage.getItem("sessionId");
 
     if (!sessionId) {
@@ -43,16 +384,18 @@
     }
 
     async function sendPrompt() {
-      const prompt = document.getElementById("promptInput").value.trim();
+      const promptInput = document.getElementById("promptInput");
+      const prompt = promptInput.value.trim();
+      
       if (!prompt) {
-        alert("Please enter a prompt.");
+        showNotification("Please enter a prompt to create magic! ✨", "warning");
         return;
       }
 
       const waiting = document.getElementById("waiting");
       const history = document.getElementById("history");
 
-      // Show waiting spinner
+      // Show magical loading
       waiting.classList.remove("hidden");
 
       try {
@@ -68,32 +411,78 @@
         // Hide loader
         waiting.classList.add("hidden");
 
-        // Append result to chat history
+        // Create history item with enhanced styling
         const div = document.createElement("div");
-        div.className = "p-3 border rounded-lg bg-gray-50";
+        div.className = "history-item p-4 rounded-xl mb-4";
 
-        let html = `<p class="font-medium text-gray-800">Prompt:</p>
-                    <p class="mb-2 text-gray-600">${prompt}</p>`;
+        let html = `<p class="font-semibold text-purple-200 mb-1">🎯 Prompt:</p>
+                    <p class="mb-3 text-white font-medium">${prompt}</p>`;
 
         if (data.image) {
-          html += `<img src="${data.image}" 
-                       class="rounded-lg shadow-md mb-2 max-h-48 mx-auto" alt="Generated Image"/>`;
+          html += `<div class="image-preview mb-3">
+                     <img src="${data.image}" 
+                          class="rounded-lg shadow-lg mb-2 max-h-48 mx-auto w-full object-cover" 
+                          alt="Generated Image"/>
+                   </div>`;
         }
 
         if (data.Download) {
           html += `<a href="${data.Download}" target="_blank"
-                      class="inline-block bg-green-600 text-white px-3 py-1 rounded-lg hover:bg-green-700 transition">
-                      ⬇ Download</a>`;
+                      class="download-btn inline-block text-white font-semibold px-4 py-2 rounded-lg transition-all duration-300">
+                      💾 Download HD
+                   </a>`;
         }
 
         div.innerHTML = html;
-        history.appendChild(div);
+        history.insertBefore(div, history.firstChild);
+        
+        // Clear input and show success
+        promptInput.value = "";
+        showNotification("✨ Image generated successfully!", "success");
+
       } catch (err) {
         waiting.classList.add("hidden");
-        alert("❌ Error generating image. Check console.");
+        showNotification("🔮 Magic failed! Please try again.", "error");
         console.error(err);
       }
     }
+
+    function showNotification(message, type) {
+      const notification = document.createElement("div");
+      const colors = {
+        success: "bg-gradient-to-r from-green-400 to-green-600",
+        warning: "bg-gradient-to-r from-yellow-400 to-orange-500", 
+        error: "bg-gradient-to-r from-red-400 to-red-600"
+      };
+      
+      notification.className = `fixed top-6 right-6 z-50 ${colors[type]} text-white font-semibold px-6 py-4 rounded-xl shadow-lg transform transition-all duration-500 translate-x-full`;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => notification.classList.remove('translate-x-full'), 100);
+      setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => document.body.removeChild(notification), 500);
+      }, 3500);
+    }
+
+    // Enhanced enter key functionality
+    document.getElementById("promptInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendPrompt();
+      }
+    });
+
+    // Add input focus glow effect
+    document.getElementById("promptInput").addEventListener("focus", function() {
+      this.parentElement.style.transform = "scale(1.02)";
+    });
+
+    document.getElementById("promptInput").addEventListener("blur", function() {
+      this.parentElement.style.transform = "scale(1)";
+    });
   </script>
 </body>
 </html>

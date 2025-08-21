@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Replicate AI - Image Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #1e3c72 50%, #2a5298 75%, #4facfe 100%);
+      animation: gradientShift 15s ease infinite;
+    }
+    
+    @keyframes gradientShift {
+      0%, 100% { background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #1e3c72 50%, #2a5298 75%, #4facfe 100%); }
+      25% { background: linear-gradient(135deg, #4facfe 0%, #667eea 25%, #764ba2 50%, #1e3c72 75%, #2a5298 100%); }
+      50% { background: linear-gradient(135deg, #2a5298 0%, #4facfe 25%, #667eea 50%, #764ba2 75%, #1e3c72 100%); }
+      75% { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 25%, #4facfe 50%, #667eea 75%, #764ba2 100%); }
+    }
+    
+    .floating-shapes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      animation: float 20s infinite linear;
+      backdrop-filter: blur(10px);
+    }
+    
+    .shape:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      left: 10%;
+      animation-delay: 0s;
+    }
+    
+    .shape:nth-child(2) {
+      width: 60px;
+      height: 60px;
+      left: 20%;
+      animation-delay: 2s;
+    }
+    
+    .shape:nth-child(3) {
+      width: 100px;
+      height: 100px;
+      left: 30%;
+      animation-delay: 4s;
+    }
+    
+    .shape:nth-child(4) {
+      width: 40px;
+      height: 40px;
+      left: 40%;
+      animation-delay: 6s;
+    }
+    
+    .shape:nth-child(5) {
+      width: 70px;
+      height: 70px;
+      left: 50%;
+      animation-delay: 8s;
+    }
+    
+    .shape:nth-child(6) {
+      width: 90px;
+      height: 90px;
+      left: 60%;
+      animation-delay: 10s;
+    }
+    
+    .shape:nth-child(7) {
+      width: 50px;
+      height: 50px;
+      left: 70%;
+      animation-delay: 12s;
+    }
+    
+    .shape:nth-child(8) {
+      width: 110px;
+      height: 110px;
+      left: 80%;
+      animation-delay: 14s;
+    }
+    
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    }
+    
+    .pulse-border {
+      animation: pulseBorder 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes pulseBorder {
+      from { border-color: rgba(255, 255, 255, 0.2); }
+      to { border-color: rgba(255, 255, 255, 0.6); }
+    }
+    
+    .loading-dots::after {
+      content: '';
+      animation: loadingDots 1.5s steps(4) infinite;
+    }
+    
+    @keyframes loadingDots {
+      0%, 20% { content: ''; }
+      40% { content: '.'; }
+      60% { content: '..'; }
+      80%, 100% { content: '...'; }
+    }
+    
+    .hover-glow {
+      transition: all 0.3s ease;
+    }
+    
+    .hover-glow:hover {
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    #three-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    
+    .content-overlay {
+      position: relative;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body class="gradient-bg min-h-screen">
+  <!-- Three.js Background -->
+  <div id="three-container"></div>
+  
+  <!-- Floating Shapes -->
+  <div class="floating-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="content-overlay flex items-center justify-center min-h-screen p-4">
+    <div class="glass-effect rounded-2xl p-8 w-full max-w-2xl text-center pulse-border">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold text-white mb-2">
+          🚀 Replicate AI Generator
+        </h1>
+        <p class="text-blue-100 text-lg">Transform your imagination into stunning visuals</p>
+      </div>
+      
+      <!-- Input Section -->
+      <div class="mb-6">
+        <div class="relative">
+          <textarea 
+            id="promptInput" 
+            placeholder="Describe the image you want to generate..."
+            class="w-full bg-white/10 text-white placeholder-blue-200 border border-white/20 rounded-xl p-4 h-32 resize-none focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none backdrop-blur-sm"
+          ></textarea>
+        </div>
+        
+        <!-- Generate Button -->
+        <button 
+          id="generateBtn"
+          onclick="sendPrompt()" 
+          class="w-full mt-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover-glow"
+        >
+          <span id="buttonText">✨ Generate Image</span>
+        </button>
+      </div>
+
+      <!-- Loading Animation -->
+      <div id="loadingSection" class="hidden mb-6">
+        <div class="glass-effect rounded-xl p-6">
+          <div class="flex items-center justify-center mb-4">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-300 border-t-white"></div>
+          </div>
+          <p class="text-white text-lg font-medium loading-dots">Creating your masterpiece</p>
+          <div class="mt-4 bg-white/10 rounded-full h-2 overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-400 to-purple-500 h-full rounded-full animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image Preview Container -->
+      <div id="imagePreview" class="hidden mb-6">
+        <div class="glass-effect rounded-xl p-6">
+          <h3 class="text-white text-xl font-semibold mb-4">Your Generated Image</h3>
+          <div class="relative">
+            <img id="generatedImage" class="w-full rounded-lg shadow-lg" alt="Generated Image" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg"></div>
+          </div>
+          <button 
+            id="downloadBtn"
+            class="mt-4 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 hover-glow"
+          >
+            📥 Download Image
+          </button>
+        </div>
+      </div>
+
+      <!-- History Section -->
+      <div id="historySection" class="mt-8">
+        <h3 class="text-white text-xl font-semibold mb-4">Recent Generations</h3>
+        <div id="history" class="space-y-4 max-h-96 overflow-y-auto"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Three.js Background Animation
+    let scene, camera, renderer, particles;
+    
+    function initThreeJS() {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer({ alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.getElementById('three-container').appendChild(renderer.domElement);
+
+      // Create particles
+      const particlesGeometry = new THREE.BufferGeometry();
+      const particlesCount = 100;
+      const posArray = new Float32Array(particlesCount * 3);
+
+      for (let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 50;
+      }
+
+      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+      const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.1,
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.6
+      });
+
+      particles = new THREE.Points(particlesGeometry, particlesMaterial);
+      scene.add(particles);
+
+      camera.position.z = 5;
+
+      animate();
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      particles.rotation.x += 0.0005;
+      particles.rotation.y += 0.0005;
+      renderer.render(scene, camera);
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Initialize Three.js when page loads
+    window.addEventListener('load', initThreeJS);
+
+    // Main functionality
+    const WEBHOOK_URL = "https://houssamdahbi.app.n8n.cloud/webhook-test/fb4d34fb-2ad9-49d9-94d6-02b2d4f1d5ba/replicate";
+    let sessionId = localStorage.getItem("sessionId");
+
+    if (!sessionId) {
+      sessionId = "sess-" + Math.random().toString(36).substring(2, 12);
+      localStorage.setItem("sessionId", sessionId);
+    }
+
+    async function sendPrompt() {
+      const promptInput = document.getElementById("promptInput");
+      const prompt = promptInput.value.trim();
+      
+      if (!prompt) {
+        showNotification("Please enter a prompt to generate an image.", "warning");
+        return;
+      }
+
+      // Show loading state
+      showLoading(true);
+      hideImagePreview();
+      
+      try {
+        const response = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ prompt, sessionId })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Response:", data);
+
+        // Hide loading
+        showLoading(false);
+
+        if (data.image) {
+          showImagePreview(data.image, data.Download, prompt);
+          addToHistory(prompt, data.image, data.Download);
+          promptInput.value = ""; // Clear input
+          showNotification("Image generated successfully!", "success");
+        } else {
+          showNotification("No image was generated. Please try again.", "error");
+        }
+
+      } catch (error) {
+        showLoading(false);
+        console.error("Error:", error);
+        showNotification("Error generating image. Please check your connection and try again.", "error");
+      }
+    }
+
+    function showLoading(show) {
+      const loadingSection = document.getElementById("loadingSection");
+      const generateBtn = document.getElementById("generateBtn");
+      const buttonText = document.getElementById("buttonText");
+
+      if (show) {
+        loadingSection.classList.remove("hidden");
+        generateBtn.disabled = true;
+        generateBtn.classList.add("opacity-50", "cursor-not-allowed");
+        buttonText.textContent = "Generating...";
+      } else {
+        loadingSection.classList.add("hidden");
+        generateBtn.disabled = false;
+        generateBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        buttonText.textContent = "✨ Generate Image";
+      }
+    }
+
+    function showImagePreview(imageUrl, downloadUrl, prompt) {
+      const imagePreview = document.getElementById("imagePreview");
+      const generatedImage = document.getElementById("generatedImage");
+      const downloadBtn = document.getElementById("downloadBtn");
+
+      generatedImage.src = imageUrl;
+      
+      if (downloadUrl) {
+        downloadBtn.onclick = () => window.open(downloadUrl, '_blank');
+        downloadBtn.classList.remove("hidden");
+      } else {
+        downloadBtn.classList.add("hidden");
+      }
+
+      imagePreview.classList.remove("hidden");
+    }
+
+    function hideImagePreview() {
+      const imagePreview = document.getElementById("imagePreview");
+      imagePreview.classList.add("hidden");
+    }
+
+    function addToHistory(prompt, imageUrl, downloadUrl) {
+      const history = document.getElementById("history");
+      const historyItem = document.createElement("div");
+      historyItem.className = "glass-effect rounded-xl p-4 text-left";
+
+      historyItem.innerHTML = `
+        <p class="text-blue-100 text-sm mb-2"><strong>Prompt:</strong></p>
+        <p class="text-white mb-3">${prompt}</p>
+        <div class="flex items-center gap-3">
+          <img src="${imageUrl}" class="w-16 h-16 rounded-lg object-cover" alt="Generated thumbnail" />
+          ${downloadUrl ? `<button onclick="window.open('${downloadUrl}', '_blank')" 
+                            class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm transition-colors">
+                            Download
+                          </button>` : ''}
+        </div>
+      `;
+
+      history.insertBefore(historyItem, history.firstChild);
+      
+      // Keep only last 5 items
+      while (history.children.length > 5) {
+        history.removeChild(history.lastChild);
+      }
+    }
+
+    function showNotification(message, type) {
+      const notification = document.createElement("div");
+      notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg text-white font-medium transition-all duration-300 ${
+        type === 'success' ? 'bg-green-500' : 
+        type === 'warning' ? 'bg-yellow-500' : 
+        'bg-red-500'
+      }`;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => document.body.removeChild(notification), 300);
+      }, 3000);
+    }
+
+    // Allow Enter key to submit (Ctrl+Enter for new line)
+    document.getElementById("promptInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && !e.ctrlKey) {
+        e.preventDefault();
+        sendPrompt();
+      }
+    });
+  </script>
+</body>
+</html>
